@@ -17,9 +17,16 @@ import java.util.UUID;
 
 @Service
 public class WarenkorbService {
-    AnzahlService anzahlService;
-    PreisService preisService;
-    WarenkorbzeileService warenkorbzeileService;
+    private final AnzahlService anzahlService;
+    private final PreisService preisService;
+    private final WarenkorbzeileService warenkorbzeileService;
+
+    public WarenkorbService(AnzahlService anzahlService, PreisService preisService, WarenkorbzeileService warenkorbzeileService) {
+        this.anzahlService = anzahlService;
+        this.preisService = preisService;
+        this.warenkorbzeileService = warenkorbzeileService;
+    }
+
     public Warenkorb erstelleWarenkorb(WarenkorbID ID, KundeID kundeID, Preis maxEinkaufswert) {
         Warenkorb warenkorb = new Warenkorb(ID, kundeID, maxEinkaufswert);
         validiereWarenkorb(warenkorb);
@@ -27,7 +34,6 @@ public class WarenkorbService {
     }
 
     public void fuegeArtikelHinzu(Warenkorb warenkorb, Artikel artikel, Anzahl anzahl) {
-        WarenkorbzeileService warenkorbzeileService = new WarenkorbzeileService();
         Warenkorbzeile zeileMitArtikel = findeZeileZu(warenkorb.getWarenkorbzeilen(), artikel.getID());
 
         if (zeileMitArtikel != null) {

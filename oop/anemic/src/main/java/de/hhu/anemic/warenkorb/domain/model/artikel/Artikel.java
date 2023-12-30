@@ -1,6 +1,5 @@
 package de.hhu.anemic.warenkorb.domain.model.artikel;
 
-import de.hhu.anemic.warenkorb.domain.model.PflichtfeldFehlt;
 import de.hhu.anemic.warenkorb.domain.model.common.preis.Preis;
 
 public class Artikel {

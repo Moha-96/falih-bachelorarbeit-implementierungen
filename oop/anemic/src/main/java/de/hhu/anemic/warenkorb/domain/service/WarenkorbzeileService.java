@@ -12,8 +12,14 @@ import java.math.BigDecimal;
 
 @Service
 public class WarenkorbzeileService {
-    AnzahlService anzahlService;
-    PreisService preisService;
+    private final AnzahlService anzahlService;
+    private final PreisService preisService;
+
+    public WarenkorbzeileService(AnzahlService anzahlService, PreisService preisService) {
+        this.anzahlService = anzahlService;
+        this.preisService = preisService;
+    }
+
     public Warenkorbzeile erstelleWarenkorbzeile(WarenkorbzeileID ID, ArtikelID artikelID, Anzahl anzahl, Preis preis, Anzahl maxArtikelAnzahl) {
         Warenkorbzeile warenkorbzeile = new Warenkorbzeile(ID, artikelID, anzahl, preis, maxArtikelAnzahl);
         validiereWarenkorbzeile(warenkorbzeile);
