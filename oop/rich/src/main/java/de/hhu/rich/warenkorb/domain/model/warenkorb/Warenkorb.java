@@ -33,7 +33,7 @@ public class Warenkorb {
     }
 
     public Warenkorb(WarenkorbID ID,
-                     WarenkorbID id, KundeID kundeID,
+                     KundeID kundeID,
                      List<Warenkorbzeile> warenkorbzeilen,
                      Preis gesamtPreis,
                      Preis maxEinkaufswert) {

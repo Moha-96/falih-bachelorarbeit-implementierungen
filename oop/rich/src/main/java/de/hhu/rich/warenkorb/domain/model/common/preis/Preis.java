@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public record Preis(BigDecimal betrag, String waehrung) {
     public Preis {
         if (betrag.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Betrag darf nicht negativ sein");
+            throw new IllegalArgumentException("Betrag darf nicht negativ sein.");
         }
     }
 
