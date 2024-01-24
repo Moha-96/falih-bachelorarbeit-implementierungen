@@ -70,16 +70,13 @@ public class Warenkorb {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Warenkorb warenkorb = (Warenkorb) o;
-        return ID.equals(warenkorb.ID) &&
-                kundeID.equals(warenkorb.kundeID) &&
-                warenkorbzeilen.equals(warenkorb.warenkorbzeilen) &&
-                gesamtPreis.equals(warenkorb.gesamtPreis) &&
-                maxEinkaufswert.equals(warenkorb.maxEinkaufswert);
+        return ID.equals(warenkorb.ID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, kundeID, warenkorbzeilen, gesamtPreis, maxEinkaufswert);
+        if(ID != null) return ID.hashCode();
+        else return super.hashCode();
     }
 
     @Override
