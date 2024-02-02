@@ -17,7 +17,7 @@
               (preis/ist-groesser-als? gesamt-preis max-einkaufswert))
       (throw (IllegalArgumentException. "Fehlerhafter Warenkorb")))))
 
-(defn erstelle-warenkorb [kunde-id max-einkaufswert]
+(defn erstelle-neuen-warenkorb [kunde-id max-einkaufswert]
   (let [neuer-warenkorb (->Warenkorb (warenkorb-id/erstelleWarenkorbID)
                                      (KundeID kunde-id)
                                      []
@@ -25,6 +25,13 @@
                                      (preis/erstelle-preis max-einkaufswert "EUR"))]
     (validiere-warenkorb neuer-warenkorb)
     neuer-warenkorb))
+
+(defn erstelle-warenkorb [warenkorb neue-warenkorbzeilen neuer-gesamtpreis]
+  (->Warenkorb (:id warenkorb)
+               (:kunde-id warenkorb)
+               neue-warenkorbzeilen
+               neuer-gesamtpreis
+               (:max-einkaufswert warenkorb)))
 
 (defn finde-zeile-zu-artikel [warenkorb artikel-id]
   (first (filter #(= artikel-id (:artikel-id %)) (:warenkorbzeilen warenkorb))))
@@ -37,7 +44,7 @@
                                                                            (anzahl/erstelle-anzahl 10)))
         neuer-gesamtpreis (preis/erhoehe-um (:gesamt-preis warenkorb)
                                             (warenkorbzeile/berechne-gesamtpreis (last neue-warenkorbzeilen)))]
-    (assoc warenkorb (:warenkorbzeilen neue-warenkorbzeilen) (:gesamt-preis neuer-gesamtpreis))))
+    (erstelle-warenkorb warenkorb neue-warenkorbzeilen neuer-gesamtpreis)))
 
 (defn fuege-hinzu [warenkorb artikel anzahl]
   (let [zeile-mit-artikel (finde-zeile-zu-artikel warenkorb (:id artikel))
@@ -45,22 +52,22 @@
                                   (warenkorbzeile/berechne-gesamtpreis zeile-mit-artikel)
                                   (preis/erstelle-preis (:preis artikel) "EUR"))
         neuer-warenkorb (if zeile-mit-artikel
-                          (warenkorbzeile/erhoehe-um zeile-mit-artikel anzahl)
+                          (conj (remove #(= artikel (:id %)) (:warenkorbzeilen warenkorb))
+                                (warenkorbzeile/erhoehe-um zeile-mit-artikel anzahl))
                           (fuege-warenkorbzeile-hinzu warenkorb artikel anzahl))]
-    (assoc neuer-warenkorb :gesamt-preis (preis/erhoehe-um (:gesamt-preis neuer-warenkorb) gesamtpreis-von-artikel))))
+    (erstelle-warenkorb warenkorb (:warenkorbzeilen neuer-warenkorb) gesamtpreis-von-artikel)))
 
 (defn reduziere [warenkorb artikel anzahl]
   (let [zeile-mit-artikel (finde-zeile-zu-artikel warenkorb (:id artikel))]
     (when zeile-mit-artikel
-      (warenkorbzeile/reduziere-um zeile-mit-artikel anzahl)
-      (when (= 0 (:anzahl zeile-mit-artikel))
-        (assoc-in warenkorb [:warenkorbzeilen] (remove #(= artikel (:id %)) (:warenkorbzeilen warenkorb)))))
-    (validiere-warenkorb warenkorb)))
+      (let [neue-warenkorbzeile (warenkorbzeile/reduziere-um zeile-mit-artikel anzahl)]
+        (when (= 0 (:anzahl neue-warenkorbzeile))
+          (conj (remove #(= artikel (:id %)) (:warenkorbzeilen warenkorb)) neue-warenkorbzeile))
+        (erstelle-warenkorb warenkorb (:warenkorbzeilen warenkorb) (warenkorbzeile/berechne-gesamtpreis zeile-mit-artikel))))))
 
 (defn entferne [warenkorb artikel]
   (let [zeile-mit-artikel (finde-zeile-zu-artikel warenkorb (:id artikel))]
     (when zeile-mit-artikel
       (let [gesamtpreis-von-artikel (warenkorbzeile/berechne-gesamtpreis zeile-mit-artikel)]
-        (assoc-in warenkorb [:warenkorbzeilen] (remove #(= artikel (:id %)) (:warenkorbzeilen warenkorb)))
-        (assoc-in warenkorb [:gesamt-preis] (preis/reduziere-um (:gesamt-preis warenkorb) gesamtpreis-von-artikel)))))
-  (validiere-warenkorb warenkorb))
+        (erstelle-warenkorb warenkorb (vec (remove #(= artikel (:id %)) (:warenkorbzeilen warenkorb)))
+                                  (preis/reduziere-um (:gesamt-preis warenkorb) gesamtpreis-von-artikel))))))

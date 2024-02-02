@@ -22,14 +22,14 @@
 (defn setze-neuen-namen [artikel neuer-name]
   (if (or (nil? neuer-name) (empty? (clojure.string/trim neuer-name)))
     (throw (IllegalArgumentException. "Neuer Name darf nicht null oder leer sein."))
-    (assoc artikel :name neuer-name)))
+    (erstelle-artikel neuer-name (:beschreibung artikel) (:preis artikel))))
 
 (defn setze-neuen-preis [artikel neuer-preis]
   (if (or (nil? neuer-preis) (< (.compareTo (:betrag neuer-preis) BigDecimal/ZERO) 0))
     (throw (IllegalArgumentException. "Neuer Preis darf nicht null sein und muss nicht-negativ sein."))
-    (assoc artikel :preis neuer-preis)))
+    (erstelle-artikel (:name artikel) (:beschreibung artikel) neuer-preis)))
 
 (defn setze-neue-beschreibung [artikel neue-beschreibung]
   (if (or (nil? neue-beschreibung) (empty? (clojure.string/trim neue-beschreibung)))
     (throw (IllegalArgumentException. "Neue Beschreibung darf nicht null oder leer sein."))
-    (assoc artikel :beschreibung neue-beschreibung)))
+    (erstelle-artikel (:name artikel) neue-beschreibung (:preis artikel))))

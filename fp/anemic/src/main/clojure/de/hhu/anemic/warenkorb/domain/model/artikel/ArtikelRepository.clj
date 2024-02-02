@@ -1,7 +1,16 @@
-(ns de.hhu.anemic.warenkorb.domain.model.artikel.ArtikelRepository)
+(ns de.hhu.anemic.warenkorb.domain.model.artikel.ArtikelRepository
+  (:refer-clojure :exclude [find]))
+
+(def find nil)
+(def add! nil)
+(def update! nil)
 
 (defprotocol ArtikelRepository
-  (findeMit [this artikel-id])
-  (speichere [this artikel])
-  (entferne [this artikel-id]))
+  (-find [this artikel-id])
+  (-add! [this artikel])
+  (-update! [this concurrency-version artikel]))
 
+(defn set-implementation! [impl]
+  (def find (partial -find impl))
+  (def add! (partial -add! impl))
+  (def update! (partial -update! impl)))

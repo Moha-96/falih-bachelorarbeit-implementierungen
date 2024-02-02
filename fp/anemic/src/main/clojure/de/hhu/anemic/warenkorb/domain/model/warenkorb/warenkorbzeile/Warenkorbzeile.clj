@@ -5,6 +5,7 @@
   (:import (de.hhu.anemic.warenkorb.domain.model.artikel.ArtikelID ArtikelID)))
 
 (defrecord Warenkorbzeile [id artikel-id anzahl preis max-artikel-anzahl])
+
 (defn validiere-warenkorbzeile [warenkorbzeile]
   (let [anzahl (:anzahl warenkorbzeile)
         max-artikel-anzahl (:max-artikel-anzahl warenkorbzeile)]
@@ -26,15 +27,16 @@
     neue-warenkorbzeile))
 
 (defn erhoehe-um [warenkorbzeile anzahl]
-  (validiere-warenkorbzeile (assoc warenkorbzeile :anzahl (anzahl/erhoehe-um (:anzahl warenkorbzeile) anzahl)))
-  (assoc warenkorbzeile :anzahl (anzahl/erhoehe-um (:anzahl warenkorbzeile) anzahl)))
+  (let [neue-anzahl (anzahl/erhoehe-um (:anzahl warenkorbzeile) anzahl)]
+    (validiere-warenkorbzeile (erstelle-warenkorbzeile (:artikel-id warenkorbzeile) neue-anzahl (:preis warenkorbzeile) (:max-artikel-anzahl warenkorbzeile)))
+    (erstelle-warenkorbzeile (:artikel-id warenkorbzeile) neue-anzahl (:preis warenkorbzeile) (:max-artikel-anzahl warenkorbzeile))))
 
 (defn reduziere-um [warenkorbzeile anzahl]
-  (validiere-warenkorbzeile (assoc warenkorbzeile :anzahl (anzahl/reduziere-um (:anzahl warenkorbzeile) anzahl)))
-  (assoc warenkorbzeile :anzahl (anzahl/reduziere-um (:anzahl warenkorbzeile) anzahl)))
+  (let [neue-anzahl (anzahl/reduziere-um (:anzahl warenkorbzeile) anzahl)]
+    (validiere-warenkorbzeile (erstelle-warenkorbzeile (:artikel-id warenkorbzeile) neue-anzahl (:preis warenkorbzeile) (:max-artikel-anzahl warenkorbzeile)))
+    (erstelle-warenkorbzeile (:artikel-id warenkorbzeile) neue-anzahl (:preis warenkorbzeile) (:max-artikel-anzahl warenkorbzeile))))
 
 (defn berechne-gesamtpreis [warenkorbzeile]
   (validiere-warenkorbzeile warenkorbzeile)
   (let [gesamt-betrag (* (:betrag (:preis warenkorbzeile)) (:anzahl warenkorbzeile))]
     (preis/erstelle-preis (bigdec gesamt-betrag) (:waehrung (:preis warenkorbzeile)))))
-

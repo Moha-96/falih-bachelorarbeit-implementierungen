@@ -10,14 +10,12 @@
 (defn erhoehe-um [preis betrag]
   (if (<= betrag BigDecimal/ZERO)
     (throw (IllegalArgumentException. "Die Erhöhung muss größer als 0 sein"))
-    (erstelle-preis (+ (:betrag preis) betrag)
-                    (:waehrung preis))))
+    (erstelle-preis (+ (:betrag preis) betrag) (:waehrung preis))))
 
 (defn reduziere-um [preis betrag]
   (if (<= betrag BigDecimal/ZERO)
     (throw (IllegalArgumentException. "Die Reduzierung muss größer als 0 sein"))
-    (erstelle-preis (- (:betrag preis) betrag)
-                    (:waehrung preis))))
+    (erstelle-preis (- (:betrag preis) betrag) (:waehrung preis))))
 
 (defn ist-groesser-als? [preis max-preis]
   (> (.compareTo (:betrag preis) (:betrag max-preis)) 0))
