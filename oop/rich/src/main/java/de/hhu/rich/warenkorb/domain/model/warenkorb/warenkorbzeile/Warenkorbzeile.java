@@ -12,7 +12,6 @@ public class Warenkorbzeile {
     private final ArtikelID artikelID;
     private Anzahl anzahl;
     private final Preis preis;
-
     private final Anzahl maxArtikelAnzahl;
 
     public WarenkorbzeileID getID() {
