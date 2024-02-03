@@ -10,7 +10,7 @@
   (get-anzahl [this])
   (get-preis [this])
   (get-max-artikel-anzahl [this])
-  (erhoehe-anzahl [this n])
+  (erhoehe-um [this n])
   (reduziere-anzahl [this n])
   (berechne-gesamtpreis [this]))
 
@@ -22,7 +22,7 @@
   (get-preis [_] preis)
   (get-max-artikel-anzahl [_] max-artikel-anzahl)
 
-  (erhoehe-anzahl [this n]
+  (erhoehe-um [this n]
     (if (or (nil? n) (< (.anzahl n) 0))
       (throw (IllegalArgumentException. "Die Erhöhung muss größer als 0 sein"))
       (assoc this :anzahl (anzahl/erhoehe-um anzahl n))))

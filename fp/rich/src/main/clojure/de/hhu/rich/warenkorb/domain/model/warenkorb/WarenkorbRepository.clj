@@ -1,6 +1,16 @@
-(ns de.hhu.rich.warenkorb.domain.model.warenkorb.WarenkorbRepository)
+(ns de.hhu.rich.warenkorb.domain.model.warenkorb.WarenkorbRepository
+  (:refer-clojure :exclude [find]))
+
+(def find nil)
+(def add! nil)
+(def update! nil)
 
 (defprotocol WarenkorbRepository
-  (findeMit [this warenkorb-id])
-  (speichere [this warenkorb])
-  (entferne [this warenkorb-id]))
+  (-find [this warenkorb-id])
+  (-add! [this warenkorb])
+  (-update! [this concurrency-version warenkorb]))
+
+(defn set-implementation! [impl]
+  (def find (partial -find impl))
+  (def add! (partial -add! impl))
+  (def update! (partial -update! impl)))
