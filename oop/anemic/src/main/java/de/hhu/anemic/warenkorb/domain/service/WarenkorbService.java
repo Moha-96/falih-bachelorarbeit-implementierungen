@@ -16,17 +16,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class WarenkorbService {
-    private final AnzahlService anzahlService;
-    private final PreisService preisService;
-    private final WarenkorbzeileService warenkorbzeileService;
-
-    public WarenkorbService(AnzahlService anzahlService, PreisService preisService, WarenkorbzeileService warenkorbzeileService) {
-        this.anzahlService = anzahlService;
-        this.preisService = preisService;
-        this.warenkorbzeileService = warenkorbzeileService;
-    }
-
+public record WarenkorbService(AnzahlService anzahlService,
+                               PreisService preisService,
+                               WarenkorbzeileService warenkorbzeileService) {
     public Warenkorb erstelleWarenkorb(WarenkorbID ID, KundeID kundeID, Preis maxEinkaufswert) {
         Warenkorb warenkorb = new Warenkorb(ID, kundeID, maxEinkaufswert);
         validiereWarenkorb(warenkorb);
